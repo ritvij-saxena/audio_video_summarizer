@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import argparse
+
 import logging
+from custom_args_parser_error_handler import CustomArgumentParser
 
 def main():
     logging.info("Starting Video/Audio to Text Summarizer")
 
-    parser = argparse.ArgumentParser(description="Video/Audio to Text Summarizer CLI Tool")
+    parser = CustomArgumentParser(description="Video/Audio to Text Summarizer CLI Tool")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-a", "--audio", type=str, help="Path to audio file to be summarized")
     group.add_argument("-p", "--playlist", type=str, help="URL of YouTube playlist to download and summarize")
@@ -15,6 +16,7 @@ def main():
 
     if args.audio:
         logging.info("Audio file provided, beginning transcription and summarization.")
+        logging.info("Path: " + args.audio)
         pass
 
     elif args.video:
