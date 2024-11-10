@@ -28,7 +28,9 @@ def transcribe_audio(audio_path):
 
     # Path to the built whisper.cpp binary
     whisper_path = "./third-party/whisper.cpp/main"
-    result = subprocess.run([whisper_path, "-f", audio_path], capture_output=True, text=True)
+    logging.info("Starting Transcription")
+    logging.debug(f"cmd: {whisper_path} -f {audio_path}")
+    result = subprocess.run([whisper_path, "-f",  audio_path], capture_output=True, text=True)
     if result.returncode != 0:
         logging.error("Transcription failed: " + result.stderr)
         return None
@@ -50,6 +52,11 @@ def is_16khz_wav(audio_path):
 def convert_to_16khz(audio_path):
     """Convert an audio file to 16 kHz using ffmpeg."""
     converted_path = audio_path.replace(".wav", "_16khz.wav")
+
+    if os.path.exists(converted_path):
+        print(f"Removing existing file: {converted_path}")
+        os.remove(converted_path)
+
     ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
 
     try:
