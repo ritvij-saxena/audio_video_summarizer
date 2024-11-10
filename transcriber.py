@@ -28,12 +28,17 @@ def transcribe_audio(audio_path):
 
     # Path to the built whisper.cpp binary
     whisper_path = "./third-party/whisper.cpp/main"
+    model_path = "./third-party/whisper.cpp/models/ggml-base.en.bin"
+
     logging.info("Starting Transcription")
-    logging.debug(f"cmd: {whisper_path} -f {audio_path}")
-    result = subprocess.run([whisper_path, "-f",  audio_path], capture_output=True, text=True)
+    logging.debug(f"cmd: {whisper_path} -m {model_path} -f {audio_path}")
+
+    result = subprocess.run([whisper_path, "-m", model_path, "-f", audio_path], capture_output=True, text=True)
+
     if result.returncode != 0:
         logging.error("Transcription failed: " + result.stderr)
         return None
+
     return result.stdout
 
 def is_16khz_wav(audio_path):
