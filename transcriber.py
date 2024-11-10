@@ -57,8 +57,6 @@ def convert_to_16khz(audio_path):
         print(f"Removing existing file: {converted_path}")
         os.remove(converted_path)
 
-    ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
-
     try:
         subprocess.run([ffmpeg_binary_path, '-i', audio_path, '-ar', '16000', converted_path], check=True)
         print(f"Converted audio to 16 kHz: {converted_path}")
