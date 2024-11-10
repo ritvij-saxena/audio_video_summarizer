@@ -12,7 +12,7 @@ def main():
     # Download the Whisper model if it's not already present
     try:
         logging.info("Downloading Whisper model...")
-        subprocess.run(["sh", "./third-party/whisper.cpp/download-ggml-model.sh", "base.en"], check=True)
+        subprocess.run(["sh", "./third-party/whisper.cpp/models/download-ggml-model.sh", "base.en"], check=True)
     except subprocess.CalledProcessError:
         logging.error("Failed to download the model. Check the download script.")
         return
