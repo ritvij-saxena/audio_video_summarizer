@@ -41,7 +41,9 @@ def is_16khz_wav(audio_path):
 
 def convert_to_16khz(audio_path):
     """Convert an audio file to 16 kHz using ffmpeg-python."""
-    converted_path = audio_path.replace(".wav", "_16khz.wav")
+    copy_audio_path = audio_path
+    converted_path = copy_audio_path.replace(".wav", "_16khz.wav")
+
     try:
         ffmpeg.input(audio_path).output(converted_path, ar=16000).run(overwrite_output=True)
         logging.info(f"Converted audio to 16 kHz: {converted_path}")
