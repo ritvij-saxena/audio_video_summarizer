@@ -28,7 +28,7 @@ def transcribe_audio(audio_path):
 
     # Path to the built whisper.cpp binary
     whisper_path = "./third-party/whisper.cpp/main"
-    result = subprocess.run([whisper_path, audio_path], capture_output=True, text=True)
+    result = subprocess.run([whisper_path, "-f", audio_path], capture_output=True, text=True)
     if result.returncode != 0:
         logging.error("Transcription failed: " + result.stderr)
         return None
