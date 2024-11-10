@@ -4,7 +4,9 @@ import ffmpeg
 import os
 import subprocess
 
-os.environ['FFMPEG_BINARY'] = os.path.join("third-party", "ffmpeg", "ffmpeg")
+ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
+print(f"Using ffmpeg binary at: {ffmpeg_binary_path}")
+os.environ['FFMPEG_BINARY'] = ffmpeg_binary_path
 
 def transcribe_audio(audio_path):
     """Transcribe audio to text using whisper.cpp."""
@@ -46,16 +48,14 @@ def is_16khz_wav(audio_path):
         return False
 
 def convert_to_16khz(audio_path):
-    """Convert an audio file to 16 kHz using ffmpeg-python."""
-    logging.info("Converting the audio file to 16 kHz using ffmpeg-python.")
-    copy_audio_path = audio_path
-    logging.info("Copying and renaming audio path...")
-    converted_path = copy_audio_path.replace(".wav", "_16khz.wav")
+    """Convert an audio file to 16 kHz using ffmpeg."""
+    converted_path = audio_path.replace(".wav", "_16khz.wav")
+    ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
 
     try:
-        logging.info(f"Converting audio to 16 kHz: {converted_path}")
-        ffmpeg.input(audio_path).output(converted_path, ar=16000).run(overwrite_output=True)
+        subprocess.run([ffmpeg_binary_path, '-i', audio_path, '-ar', '16000', converted_path], check=True)
+        print(f"Converted audio to 16 kHz: {converted_path}")
         return converted_path
-    except ffmpeg.Error as e:
-        logging.error(f"ffmpeg-python conversion failed: {e.stderr.decode('utf8')}")
+    except subprocess.CalledProcessError as e:
+        print(f"ffmpeg conversion failed: {e}")
         raise RuntimeError("Failed to convert audio to 16 kHz")
