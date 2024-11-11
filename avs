@@ -4,6 +4,7 @@ import logging
 import subprocess
 from custom_args_parser_error_handler import CustomArgumentParser
 from transcriber import transcribe_audio
+from summarizer import summarize_transcription
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -36,10 +37,13 @@ def main():
     if args.audio:
         logging.info("Audio file provided, beginning transcription and summarization.")
         logging.info("Path: " + args.audio)
-        transcript = transcribe_audio(args.audio)
+        transcript = transcribe_audio(args.audio) # returns list of [{"timestamp": timestamp, "text": text}]
         if transcript:
             print("Transcription:")
             print(transcript)
+        summary = summarize_transcription(transcription_data=transcript)
+        print("Summary of the Text from the Audio:")
+        print(summary)
 
     elif args.video:
         logging.info("Video file provided, converting to audio, then transcribing and summarizing.")
