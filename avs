@@ -38,7 +38,8 @@ def main():
         logging.info("Path: " + args.audio)
         transcript = transcribe_audio(args.audio)
         if transcript:
-            print("Transcription:\n", transcript)
+            print("Transcription:")
+            print(transcript)
 
     elif args.video:
         logging.info("Video file provided, converting to audio, then transcribing and summarizing.")

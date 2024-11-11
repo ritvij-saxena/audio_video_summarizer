@@ -3,6 +3,7 @@ import wave
 import ffmpeg
 import os
 import subprocess
+import re
 
 ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
 print(f"Using ffmpeg binary at: {ffmpeg_binary_path}")
@@ -39,7 +40,30 @@ def transcribe_audio(audio_path):
         logging.error("Transcription failed: " + result.stderr)
         return None
 
-    return result.stdout
+    transcription = result.stdout.strip()
+
+    # Validate that transcription is not empty and has time-stamped lines
+    if not transcription:
+        logging.error("Transcription output is empty.")
+        return None
+
+    # Define a regex to check for expected timestamped format and capture the timestamp and text
+    timestamped_line_pattern = r"^\[(\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3})\]\s+(.*)"
+
+    lines = transcription.splitlines()
+    timestamped_transcription = []
+
+    for line in lines:
+        match = re.match(timestamped_line_pattern, line)
+        if match:
+            timestamp = match.group(1)  # Extract timestamp
+            text = match.group(2)       # Extract text
+            timestamped_transcription.append({"timestamp": timestamp, "text": text})
+        else:
+            logging.warning(f"Unexpected line format: {line}")
+
+    # If you want to return the structured transcription (timestamp + text)
+    return timestamped_transcription
 
 def is_16khz_wav(audio_path):
     """Check if a .wav file has a 16 kHz sampling rate."""
