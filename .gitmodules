@@ -1,9 +1,9 @@
 [submodule "third-party/whisper.cpp"]
-    path = third-party/whisper.cpp
-    url = https://github.com/ggerganov/whisper.cpp
+	path = third-party/whisper.cpp
+	url = https://github.com/ggerganov/whisper.cpp.git
 [submodule "third-party/ffmpeg"]
-    path = third-party/ffmpeg
-    url = https://git.ffmpeg.org/ffmpeg.git
+	path = third-party/ffmpeg
+	url = https://git.ffmpeg.org/ffmpeg.git
 [submodule "third-party/ffmpeg-python"]
-    path = third-party/ffmpeg-python
-    url = https://github.com/kkroening/ffmpeg-python.git
+	path = third-party/ffmpeg-python
+	url = https://github.com/kkroening/ffmpeg-python.git
