@@ -5,7 +5,7 @@ import subprocess
 from custom_args_parser_error_handler import CustomArgumentParser
 from transcriber import transcribe_audio
 from summarizer import summarize_transcription
-from ffmpeg_helper import check_ffmpeg, download_ffmpeg, build_ffmpeg
+from ffmpeg_helper import ensure_ffmpeg
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -28,15 +28,8 @@ def main():
         return
 
     # Check if ffmpeg exists or build/download it
-    if not check_ffmpeg():
-        logging.info("FFmpeg binary not found.")
-    try:
-        if not build_ffmpeg():
-            if not download_ffmpeg():
-                logging.error("FFmpeg build or download failed. Please check the logs.")
-                return
-    except Exception as e:
-        logging.error(f"Error during FFmpeg setup: {e}")
+    if not ensure_ffmpeg():
+        logging.error("FFmpeg setup failed. Please check the logs.")
         return
 
     parser = CustomArgumentParser(description="Video/Audio to Text Summarizer CLI Tool")
