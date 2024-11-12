@@ -80,16 +80,17 @@ def is_16khz_wav(audio_path):
 
 def convert_to_16khz(audio_path):
     """Convert an audio file to 16 kHz using ffmpeg."""
+    logging.info("Converting the audio file to 16 kHz using ffmpeg.")
     converted_path = audio_path.replace(".wav", "_16khz.wav")
 
     if os.path.exists(converted_path):
-        print(f"Removing existing file: {converted_path}")
+        logging.info(f"Removing existing file: {converted_path}")
         os.remove(converted_path)
 
     try:
         subprocess.run([ffmpeg_binary_path, '-i', audio_path, '-ar', '16000', converted_path], check=True)
-        print(f"Converted audio to 16 kHz: {converted_path}")
+        logging.info(f"Converted audio to 16 kHz: {converted_path}")
         return converted_path
     except subprocess.CalledProcessError as e:
-        print(f"ffmpeg conversion failed: {e}")
+        logging.error(f"ffmpeg conversion failed: {e}")
         raise RuntimeError("Failed to convert audio to 16 kHz")

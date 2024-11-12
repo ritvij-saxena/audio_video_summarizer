@@ -5,6 +5,7 @@ import subprocess
 from custom_args_parser_error_handler import CustomArgumentParser
 from transcriber import transcribe_audio
 from summarizer import summarize_transcription
+from ffmpeg_helper import check_ffmpeg, download_ffmpeg, build_ffmpeg
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -26,6 +27,18 @@ def main():
         logging.error("Failed to build whisper.cpp. Please check for any critical build errors.")
         return
 
+    # Check if ffmpeg exists or build/download it
+    if not check_ffmpeg():
+        logging.info("FFmpeg binary not found.")
+    try:
+        if not build_ffmpeg():
+            if not download_ffmpeg():
+                logging.error("FFmpeg build or download failed. Please check the logs.")
+                return
+    except Exception as e:
+        logging.error(f"Error during FFmpeg setup: {e}")
+        return
+
     parser = CustomArgumentParser(description="Video/Audio to Text Summarizer CLI Tool")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-a", "--audio", type=str, help="Path to audio file to be summarized")
@@ -39,11 +52,11 @@ def main():
         logging.info("Path: " + args.audio)
         transcript = transcribe_audio(args.audio) # returns list of [{"timestamp": timestamp, "text": text}]
         if transcript:
-            print("Transcription:")
-            print(transcript)
+            logging.info("Transcription:")
+            logging.info(transcript)
         summary = summarize_transcription(transcription_data=transcript)
-        print("Summary of the Text from the Audio:")
-        print(summary)
+        logging.info("Summary of the Text from the Audio:")
+        logging.info(summary)
 
     elif args.video:
         logging.info("Video file provided, converting to audio, then transcribing and summarizing.")
