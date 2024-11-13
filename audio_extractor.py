@@ -1,6 +1,7 @@
 import subprocess
 import os
 import logging
+from ffmpeg_helper import validate_media_duration
 
 # Define the path to FFmpeg binary
 FFMPEG_PATH = "third-party/ffmpeg/ffmpeg"
@@ -16,6 +17,9 @@ def extract_audio(video_path):
     if not validate_video_format(video_path):
         logging.error(f"Unsupported video format for file: {video_path}")
         return None
+
+    # Checking if the duration of audio/video is less than or equal to 5 minutes
+    validate_media_duration(video_path)
 
     # Generate the output audio file path
     audio_output_path = os.path.splitext(video_path)[0] + ".wav"  # Saves as an wav file

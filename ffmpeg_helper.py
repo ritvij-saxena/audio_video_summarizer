@@ -94,3 +94,39 @@ def set_executable_permissions():
         logging.error(f"Error setting executable permissions for {FFMPEG_PATH}: {e}")
         return False
 
+def get_media_duration(file_path):
+    """Get the duration of the media file using ffmpeg."""
+    try:
+        result = subprocess.run(
+            ['./third-party/ffmpeg/ffmpeg', '-i', file_path],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            text=True
+        )
+
+        # Search for the duration in the output
+        for line in result.stderr.split('\n'):
+            if 'Duration' in line:
+                # Duration format: Duration: 00:03:59.99 (example)
+                duration_str = line.split('Duration: ')[1].split(',')[0]
+                hours, minutes, seconds = map(float, duration_str.split(':'))
+                total_seconds = hours * 3600 + minutes * 60 + seconds
+                return total_seconds
+        raise ValueError("Duration not found in the file")
+
+    except Exception as e:
+        logging.error(f"Error extracting media duration: {e}")
+        return None
+
+def validate_media_duration(file_path, max_duration=300):
+    """Validate if the media duration is within the allowed limit (5 minutes = 300 seconds)."""
+    duration = get_media_duration(file_path)
+    if duration is not None:
+        if duration > max_duration:
+            logging.error(f"Media duration exceeds 5 minutes: {duration / 60:.2f} minutes")
+            raise ValueError("Audio/video file is too long. Please limit to 5 minutes.")
+        else:
+            logging.info(f"Media duration is valid: {duration / 60:.2f} minutes")
+    else:
+        logging.error("Unable to validate media duration.")
+        raise ValueError("Unable to determine the media duration.")

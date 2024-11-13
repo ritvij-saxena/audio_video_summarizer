@@ -4,6 +4,7 @@ import ffmpeg
 import os
 import subprocess
 import re
+from ffmpeg_helper import validate_media_duration
 
 ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
 print(f"Using ffmpeg binary at: {ffmpeg_binary_path}")
@@ -17,6 +18,9 @@ def transcribe_audio(audio_path):
     if not audio_path.endswith('.wav'):
         logging.error("Invalid file format: Only .wav files are supported.")
         return None
+
+    # Checking if the duration of audio/video is less than or equal to 5 minutes
+    validate_media_duration(audio_path)
 
     logging.info(f"Validating Sample Rate...")
     # Validate the sample rate is 16 kHz
