@@ -33,7 +33,6 @@ def summarize_transcription(transcription_data):
     summaries = []
     for chunk in chunks:
         try:
-            # Summary with more refined parameters (adjust these based on your requirements)
             summary = summarizer(chunk, max_length=200, min_length=75, do_sample=False)
             summaries.append(summary[0]['summary_text'])
         except Exception as e:
