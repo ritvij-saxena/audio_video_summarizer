@@ -44,7 +44,7 @@ def summarize_transcription(transcription_data):
 
     # Summarize the combined summaries (for refinement)
     try:
-        final_summary = summarizer(combined_summary, max_length=150, min_length=75, do_sample=False)
+        final_summary = summarizer(combined_summary, max_length=200, min_length=75, do_sample=False)
         return final_summary[0]['summary_text']
     except Exception as e:
         logging.error(f"Error summarizing combined summary: {e}")
