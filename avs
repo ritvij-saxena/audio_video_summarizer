@@ -6,6 +6,7 @@ from custom_args_parser_error_handler import CustomArgumentParser
 from transcriber import transcribe_audio
 from summarizer import summarize_transcription
 from ffmpeg_helper import ensure_ffmpeg
+from audio_extractor import extract_audio
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -54,7 +55,14 @@ def main():
     elif args.video:
         logging.info("Video file provided, converting to audio, then transcribing and summarizing.")
         logging.info("Path: " + args.video)
-        pass
+        audio_path = extract_audio(args.video)
+        transcript = transcribe_audio(audio_path) # returns list of [{"timestamp": timestamp, "text": text}]
+        if transcript:
+            logging.info("Transcription:")
+            logging.info(transcript)
+        summary = summarize_transcription(transcription_data=transcript)
+        logging.info("Summary of the Text from the Audio:")
+        logging.info(summary)
 
     elif args.playlist:
         logging.info("YouTube playlist provided, downloading and summarizing each audio.")
