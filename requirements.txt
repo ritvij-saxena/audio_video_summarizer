@@ -36,4 +36,4 @@ tqdm==4.66.6
 transformers==4.46.2
 typing_extensions==4.12.2
 urllib3==2.2.3
-youtube-dl==2021.12.17
+yt-dlp==2024.11.4
