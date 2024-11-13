@@ -1,96 +1,124 @@
-# Audio/Video Summarizer 
+# Video/Audio to Text Summarizer CLI Tool
 
-(WORK IN PROGRESS)
-
-This project is a command-line tool that transcribes and summarizes audio and video files. It utilizes **whisper.cpp** for transcription, and **Hugging Face's BART** model for summarization.
+## Overview
+The **Video/Audio to Text Summarizer** is a command-line tool that extracts text from video or audio files, transcribes the speech, and summarizes the content. It supports multiple input formats, including direct audio files, video files, and YouTube video links. 
+**This tool can process content up to 5 minutes in length only.** (Future improvements)
 
 ## Features
+- **Transcription**: Extracts speech from audio/video files and provides timestamps for each segment.
+- **Summarization**: Summarizes the transcribed content to generate a concise summary.
+- **Supports Multiple Input Formats**: Works with audio files, video files, and YouTube video links.
+- **Automatic Video to Audio Conversion**: If a video file is provided, it will be converted to audio automatically before transcription.
+- **Customizable Workflow**: Easy integration into your pipeline for audio/video transcription and summarization.
 
-- Transcribes audio files using **whisper.cpp**.
-- Summarizes transcriptions with **BART** from Hugging Face.
-- Supports both local audio files (`.wav` format) and video files.
-- Option to download and summarize YouTube playlist audio (feature in progress).
-- Automatically handles model download and compilation if needed.
+## Requirements
+
+- **Python 3.9+**: Make sure you have Python 3.9 or later installed.
+- **FFmpeg**: FFmpeg must be available in your system for video/audio processing.
+- **Whisper.cpp**: A C++ implementation of the Whisper model for transcription. The tool will download and build this model automatically.
 
 ## Installation
 
-### 1. Clone the repository:
+### Clone the Repository
 
 ```bash
-git clone https://github.com/ritvij-saxena/audio_video_summarizer.git
-cd audio_video_summarizer
+git clone https://github.com/your-repository/audio-video-summarizer.git
+cd audio-video-summarizer
 ```
 
-### 2. Set up a virtual environment (optional, but recommended):
+### Set Up Virtual Environment
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 3. Install dependencies:
-
-Make sure you have the required libraries installed by using the `requirements.txt`:
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Set up Whisper model and compile `whisper.cpp` (mandatory):
+## Setup
+1. **Download and Build Whisper.cpp**: The tool will automatically download and build the Whisper model when first executed.
 
-The tool will attempt to download the Whisper model and compile **whisper.cpp** automatically if not already set up. Ensure that you have internet access to download the necessary resources.
+2. **FFmpeg Setup**: The tool checks for the availability of FFmpeg. If it's not installed, follow the instructions to install it.
 
 ## Usage
 
-### Command-line Arguments:
+### Command-Line Arguments
 
-- `-a, --audio`: Path to the `.wav` audio file to be transcribed and summarized.
-- `-v, --video`: Path to the video file to be converted to audio, transcribed, and summarized.
-- `-p, --playlist`: URL of a YouTube playlist to download and summarize.
+The tool accepts three types of inputs:
+- **Audio File (`-a` or `--audio`)**: Provides the path to an audio file for transcription and summarization.
+- **Video File (`-v` or `--video`)**: Provides the path to a video file, which will be converted to audio before transcription and summarization.
+- **YouTube Link (`-yl` or `--youtube-link`)**: Provides a YouTube URL. The video is downloaded, converted to audio, and processed.
 
-### Example Usage:
+### Example Commands
 
-#### Summarize an Audio File:
-
-```bash
-python avs.py -a /path/to/audio.wav
-```
-
-This will transcribe the audio file and print the transcription along with a summary.
-
-#### Summarize a Video File:
+#### 1. Process Audio File
 
 ```bash
-python avs.py -v /path/to/video.mp4
+./avs -a /path/to/audio/file.wav
 ```
 
-This will convert the video to audio, transcribe, and summarize the content.
-
-#### Summarize a YouTube Playlist:
+#### 2. Process Video File
 
 ```bash
-python avs.py -p "https://www.youtube.com/playlist?list=your_playlist_id"
+./avs -v /path/to/video/file.mp4
 ```
 
-This will download each video in the playlist, convert them to audio, transcribe, and summarize them.
+#### 3. Process YouTube Video
 
-## Code Overview
+```bash
+./avs -yl "https://www.youtube.com/watch?v=example"
+```
 
-- **`avs.py`**: The main script that handles command-line interface (CLI) interaction, model downloading, compilation, and transcribing/summarizing the files.
-- **`transcriber.py`**: Contains the function `transcribe_audio()` that handles audio transcription using **whisper.cpp**. It checks the file format, sample rate, and runs the transcription process.
-- **`summarizer.py`**: Contains the function `summarize_transcription()` which summarizes the transcribed text using **Hugging Face's BART** model.
-- **`custom_args_parser_error_handler.py`**: Custom argument parser for error handling during CLI interactions.
+### Important Validation Rule
+- The video or audio file must **not exceed 5 minutes in length**. Files longer than this will not be processed.
+- Only `.wav` audio files are allowed.
+- Only `".mp4", ".avi", ".mov", ".mkv", ".flv", ".webm"` video files are allowed.
 
-## Notes
+## Architecture
 
-- The tool currently supports `.wav` files for audio transcription.
-- The sample rate for `.wav` files must be 16 kHz. If a file with a different sample rate is provided, it will be converted automatically using **ffmpeg**.
-- The video and YouTube playlist features are in progress.
+1. **Model Download**: The first time the tool runs, it downloads the Whisper model automatically using the script located at `./third-party/whisper.cpp/models/download-ggml-model.sh`.
+2. **Video/Audio Processing**: FFmpeg is used to extract audio from video files. Audio files are transcribed using Whisper.cpp, and the resulting text is summarized.
+
+## Dependencies
+
+- `python-youtube-dl`: For downloading YouTube videos.
+- `ffmpeg`: For processing video/audio files.
+- `whisper.cpp`: For speech-to-text transcription.
+
+### Helper Scripts
+- **CustomArgumentParser**: Custom argument parser with error handling.
+- **Transcriber**: Transcribes audio content using Whisper.cpp.
+- **Summarizer**: Summarizes the transcribed content.
+- **FFmpeg Helper**: Ensures FFmpeg is available and configured.
+- **Audio Extractor**: Converts video files to audio.
+- **YouTube Downloader**: Downloads YouTube videos and returns the video file path.
+
+## Troubleshooting
+
+- **FFmpeg Setup**: If the tool fails to find FFmpeg, ensure that FFmpeg is installed on your system and available in the PATH.
+- **Whisper Model Download**: If the model download fails, check the logs for errors related to the download script or internet connectivity.
+- **Video to Audio Conversion**: If video to audio conversion fails, ensure that the video file is in a supported format and that FFmpeg is working correctly.
+
+**NOTE**: If any of the tools (FFmpeg, Whisper.cpp, ffmpeg-python) encounter issues, please verify that their corresponding binaries are downloaded and placed in the appropriate directory under `/third-party`.
 
 ## Contributing
 
-Feel free to fork this repository, open issues, or create pull requests if you'd like to contribute.
+We welcome contributions to improve the tool. To contribute:
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Submit a pull request with a description of your changes.
 
-## License
 
-This project is licensed under the MIT License.
+## Contact
+
+For any questions or issues, please feel free to open an issue.
+
+### Key Features:
+1. **Setup**: It covers setting up the virtual environment, installing dependencies, and ensuring required tools (like FFmpeg and Whisper.cpp binaries) are present.
+2. **Command-line usage**: Three key use cases for processing audio, video, and YouTube links are shown.
+3. **Architecture and Dependencies**: Describes the components involved in the tool’s pipeline.
+4. **Troubleshooting**: Helpful tips for common issues with FFmpeg, Whisper model download, and audio extraction.
