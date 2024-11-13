@@ -18,7 +18,7 @@ def extract_audio(video_path):
         return None
 
     # Generate the output audio file path
-    audio_output_path = os.path.splitext(video_path)[0] + ".mp3"  # Saves as an mp3 file
+    audio_output_path = os.path.splitext(video_path)[0] + ".wav"  # Saves as an wav file
 
     # Run FFmpeg to extract audio
     try:

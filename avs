@@ -56,6 +56,9 @@ def main():
         logging.info("Video file provided, converting to audio, then transcribing and summarizing.")
         logging.info("Path: " + args.video)
         audio_path = extract_audio(args.video)
+        if not audio_path:
+            logging.error("Video to audio conversion failed...")
+            return
         transcript = transcribe_audio(audio_path) # returns list of [{"timestamp": timestamp, "text": text}]
         if transcript:
             logging.info("Transcription:")
