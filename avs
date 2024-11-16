@@ -39,7 +39,7 @@ def process_audio_file(audio_path):
         logging.info(transcript)
     summary = summarize_transcription(transcription_data=transcript)
     logging.info("Summary of the Text from the Audio:")
-    logging.info(summary)
+    print(summary)
 
 def process_video_file(video_path):
     logging.info("Video file provided, converting to audio, then transcribing and summarizing.")
