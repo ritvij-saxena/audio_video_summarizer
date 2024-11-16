@@ -9,6 +9,7 @@ from summarizer import summarize_transcription
 from ffmpeg_helper import ensure_ffmpeg
 from audio_extractor import extract_audio
 from download_youtube_video import download_video_from_youtube
+from argument_groups import load_argument_groups
 
 def setup_logging():
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -64,13 +65,10 @@ def main():
 
     parser = CustomArgumentParser(description="Video/Audio to Text Summarizer CLI Tool. Extracts text from video/audio and summarizes it. \n\n \n Important Validation Rule:\n" \
                                               " - The video or audio file must not exceed 5 minutes in length. Files longer than this will not be processed.")
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-a", "--audio", type=str, help="Path to audio file to be summarized")
-    group.add_argument("-yl", "--youtube-link", type=str, help="URL of YouTube video to download and summarize")
-    group.add_argument("-v", "--video", type=str, help="Path to video file to be summarized")
+    load_argument_groups(parser)
     args = parser.parse_args()
 
-    if len(vars(args)) > 1:
+    if any(value is not None for value in vars(args).values()):
         if not download_whisper_model():
             return
         if not build_whisper_cpp():

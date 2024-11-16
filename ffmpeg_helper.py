@@ -9,7 +9,7 @@ import stat
 FFMPEG_PATH = "third-party/ffmpeg/ffmpeg"
 FFMPEG_REPO_URL = "https://git.ffmpeg.org/ffmpeg.git"
 FFMPEG_SOURCE_PATH = "third-party/ffmpeg"
-DOWNLOAD_URL = "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz"  # Example URL for precompiled binary
+DOWNLOAD_URL = "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-i686-static.tar.xz"
 
 
 def ensure_ffmpeg():
