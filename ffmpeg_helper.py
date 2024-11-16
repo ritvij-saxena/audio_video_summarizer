@@ -3,6 +3,7 @@
 import logging
 import subprocess
 import os
+import stat
 
 # Paths
 FFMPEG_PATH = "third-party/ffmpeg/ffmpeg"
@@ -87,8 +88,13 @@ def set_executable_permissions():
     """Ensure the FFmpeg binary has executable permissions."""
     try:
         logging.info("Setting executable permissions for the FFmpeg binary...")
-        subprocess.run(["chmod", "+x", FFMPEG_PATH], check=True)
+        # Get the current permissions
+        current_permissions = os.stat(FFMPEG_PATH).st_mode
+
+        # Add execute permissions for the user
+        os.chmod(FFMPEG_PATH, current_permissions | stat.S_IXUSR)
         logging.info(f"Set executable permissions for {FFMPEG_PATH}.")
+        logging.info(f"Made {FFMPEG_PATH} executable.")
         return True
     except subprocess.CalledProcessError as e:
         logging.error(f"Error setting executable permissions for {FFMPEG_PATH}: {e}")
