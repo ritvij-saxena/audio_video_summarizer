@@ -1,10 +1,10 @@
 import subprocess
 import os
 import logging
-from ffmpeg_helper import validate_media_duration
+from utils.ffmpeg_helper import validate_media_duration
 
 # Define the path to FFmpeg binary
-FFMPEG_PATH = "third-party/ffmpeg/ffmpeg"
+FFMPEG_PATH = "../third-party/ffmpeg/ffmpeg"
 SUPPORTED_VIDEO_FORMATS = {".mp4", ".avi", ".mov", ".mkv", ".flv", ".webm"}  # Common video formats
 
 def extract_audio(video_path):

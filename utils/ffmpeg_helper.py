@@ -76,7 +76,7 @@ def build_ffmpeg():
             return False
 
         logging.info("FFmpeg built successfully and is working.")
-        os.chdir("../../")  # Return to the original directory
+        os.chdir("../../../")  # Return to the original directory
         return True
 
     except subprocess.CalledProcessError as e:
