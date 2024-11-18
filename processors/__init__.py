@@ -1,5 +1,4 @@
 import os
-import importlib
 import logging
 import subprocess
 import sys
@@ -9,7 +8,6 @@ from processors.base_processor import BaseProcessor
 from processors.processor_registry import ProcessorRegistry
 from processors.video_processor import VideoProcessor
 from processors.youtube_link_processor import YoutubeLinkProcessor
-from utils.ffmpeg_helper import ensure_ffmpeg
 
 sys.path.append(os.path.dirname(__file__))
 
