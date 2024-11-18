@@ -6,11 +6,8 @@ from utils.transcriber import transcribe_audio
 
 
 class YoutubeLinkProcessor(BaseProcessor):
-    def __init__(self, youtube_link):
-        self.youtube_link = youtube_link
-
     def process(self):
-        youtube_link = self.youtube_link
+        youtube_link = self.path
         video_path = download_video_from_youtube(youtube_link)
         audio_path = extract_audio(video_path)
         transcript = transcribe_audio(audio_path)
