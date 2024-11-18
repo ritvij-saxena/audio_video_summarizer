@@ -1,10 +1,9 @@
 import logging
 import wave
-import ffmpeg
 import os
 import subprocess
 import re
-from ffmpeg_helper import validate_media_duration
+from utils.ffmpeg_helper import validate_media_duration
 
 ffmpeg_binary_path = os.path.join("third-party", "ffmpeg", "ffmpeg")
 print(f"Using ffmpeg binary at: {ffmpeg_binary_path}")
@@ -32,13 +31,13 @@ def transcribe_audio(audio_path):
             return None
 
     # Path to the built whisper.cpp binary
-    whisper_path = "./third-party/whisper.cpp/main"
-    model_path = "./third-party/whisper.cpp/models/ggml-base.en.bin"
+    whisper_path = "third-party/whisper.cpp/main"
+    model_path = "third-party/whisper.cpp/models/ggml-base.en.bin"
 
     logging.info("Starting Transcription")
     logging.debug(f"cmd: {whisper_path} -m {model_path} -f {audio_path}")
 
-    result = subprocess.run([whisper_path, "-m", model_path, "-f", audio_path], capture_output=True, text=True)
+    result = subprocess.run(["./" + whisper_path, "-m", model_path, "-f", audio_path], capture_output=True, text=True)
 
     if result.returncode != 0:
         logging.error("Transcription failed: " + result.stderr)

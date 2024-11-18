@@ -6,8 +6,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # Default download path
-DEFAULT_DOWNLOAD_PATH = './youtube_downloads'
-FFMPEG_PATH = "third-party/ffmpeg/ffmpeg"
+DEFAULT_DOWNLOAD_PATH = '../youtube_downloads'
+FFMPEG_PATH = "../third-party/ffmpeg/ffmpeg"
 
 def download_video_from_youtube(youtube_url: str):
     try:
