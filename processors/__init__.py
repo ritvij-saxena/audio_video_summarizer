@@ -6,6 +6,7 @@ import sys
 
 from processors.audio_processor import AudioProcessor
 from processors.base_processor import BaseProcessor
+from processors.processor_registry import ProcessorRegistry
 from processors.video_processor import VideoProcessor
 from processors.youtube_link_processor import YoutubeLinkProcessor
 from utils.ffmpeg_helper import ensure_ffmpeg
@@ -32,38 +33,22 @@ def build_whisper_cpp():
 
 def process_input(args):
     """Dynamically processes input based on arguments."""
-    if any(value is not None for value in vars(args).values()):
-
-        if not download_whisper_model():
-            logging.error("Download whisper failed. Please check the logs.")
-            return
-
-        if not build_whisper_cpp():
-            logging.error("Build whisper failed. Please check the logs.")
-            return
-
-        if not ensure_ffmpeg():
-            logging.error("ffmpeg setup failed. Please check the logs.")
-            return
-
-        # Ensure the processors directory exists and contains the modules
-        current_dir = os.path.dirname(__file__)
-        print(f"Current directory: {current_dir}")
-
-        if not os.path.isdir(current_dir):
-            logging.error(f"Processors directory does not exist: {current_dir}")
-            return
-
-        processor = None
-        if args.audio:
-            processor = AudioProcessor(args.audio)
-
-        elif args.video:
-            processor = VideoProcessor(args.video)
-
-        elif args.youtube_link:
-            processor = YoutubeLinkProcessor(args.youtube_link)
-
-        processor.process()
-    else:
+    if not any(value is not None for value in vars(args).values()):
         raise ValueError("No arguments provided.")
+
+    # Discover processors dynamically
+    processors_dir = os.path.dirname(__file__)
+    ProcessorRegistry.discover_processors(processors_dir)
+
+    # Process the input based on the provided arguments
+    for arg, value in vars(args).items():
+        if value is not None:
+            processor_class = ProcessorRegistry.get_processor(arg)
+            if processor_class:
+                processor_instance = processor_class(value)
+                processor_instance.process()
+                return
+            else:
+                logging.error(f"No processor registered for {arg}")
+
+    raise ValueError("No suitable processor found for the provided input.")
