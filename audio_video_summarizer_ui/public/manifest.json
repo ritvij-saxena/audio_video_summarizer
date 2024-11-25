@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "version": "1.0.0",
+    "name": "Audio Video Summarizer",
+    "description": "Audio Video Summarizer is a tool that takes in video or audio files and summarizes the content.",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": [
+        "scripting",
+        "storage",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ]
+}
