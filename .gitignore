@@ -94,3 +94,95 @@ Desktop.ini
 
 # Other
 *.log
+
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+out/
+
+# Build output
+build/
+dist/
+public/
+static/
+
+# Test coverage
+coverage/
+
+# VSCode files
+.vscode/
+*.code-workspace
+
+# Dependency directories
+jspm_packages/
+
+# Editor directories and files
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# MacOS files
+.DS_Store
+
+# Lint and formatter
+.eslintcache
+.prettierignore
+.prettiercache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Babel
+.babelrc
+.babelrc.js
+.babelrc.json
+.babelrc.cjs
+.babelrc.mjs
+*.babelrc
+
+# React Native
+*.expo
+.expo-shared/
+
+# Next.js
+.vercel/
+.serverless/
+
+# Miscellaneous
+yarn.lock
+package-lock.json
+npm-shrinkwrap.json
+.pnpm-debug.log
+.pnpm-debug.yaml
+
+# Optional lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Vite-specific files
+.vite/
+vite.config.*
+vite-env.d.ts
