@@ -120,8 +120,8 @@ out/
 
 # Build output
 build/
-dist/
-public/
+dist/node_modules/
+# public/ (remove later)
 static/
 
 # Test coverage
