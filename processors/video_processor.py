@@ -10,4 +10,4 @@ class VideoProcessor(BaseProcessor):
         audio_path = extract_audio(video_path)
         transcript = transcribe_audio(audio_path)
         summary = summarize_transcription(transcript)
-        print(summary)
+        self.print_summary(summary)
