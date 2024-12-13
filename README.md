@@ -71,6 +71,11 @@ The tool accepts three types of inputs:
 
 ```bash
 ./avs -yl "https://www.youtube.com/watch?v=example"
+
+```
+#### Note: For Windows users, you might have to run the `avs.bat` file
+```bash
+.\avs -arg "path"
 ```
 
 ### Important Validation Rule
