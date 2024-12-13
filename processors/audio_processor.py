@@ -7,4 +7,4 @@ class AudioProcessor(BaseProcessor):
         audio_path = self.path
         transcript = transcribe_audio(audio_path)
         summary = summarize_transcription(transcript)
-        print(summary)
+        self.print_summary(summary)

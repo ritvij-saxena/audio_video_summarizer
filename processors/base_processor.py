@@ -14,3 +14,6 @@ class BaseProcessor(ABC):
         Processes the input arguments and performs the desired operation.
         """
         pass
+
+    def print_summary(self, summary):
+        print(f"\nSummary: \n {summary}")
