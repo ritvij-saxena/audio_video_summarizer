@@ -22,7 +22,11 @@ jobs:
         run: pip install pyinstaller -r requirements.txt
 
       - name: Build Executable
-        run: pyinstaller --onefile --name avs avs
+        run: |
+          pyinstaller --onefile --name avs avs.py
+
+      - name: Debug Build Output
+        run: ls -R dist/
 
       - name: Upload Executable
         uses: actions/upload-artifact@v3
