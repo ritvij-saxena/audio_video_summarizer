@@ -2,6 +2,10 @@ import os
 import logging
 import subprocess
 import sys
+import shutil
+import platform
+import requests
+import time
 
 from processors.audio_processor import AudioProcessor
 from processors.base_processor import BaseProcessor
@@ -11,6 +15,74 @@ from processors.youtube_link_processor import YoutubeLinkProcessor
 from utils.ffmpeg_helper import ensure_ffmpeg
 
 sys.path.append(os.path.dirname(__file__))
+
+OLLAMA_BASE_URL = "http://localhost:11434"
+OLLAMA_MODEL = "mistral"  # smallest model for this usecase
+
+def _check_ollama_installed():
+    """Check if Ollama is installed."""
+    return shutil.which("ollama") is not None
+
+def install_ollama():
+    """Guide the user to install Ollama based on their OS."""
+    logging.info("🔍 Checking for Ollama installation...")
+
+    if _check_ollama_installed():
+        logging.info("✅ Ollama is already installed!")
+        return True
+
+    logging.error("❌ Ollama is not installed.")
+
+    os_type = platform.system()
+
+    if os_type == "Darwin":  # macOS
+        logging.info("\n➡️ Install Ollama using Homebrew:\n   brew install ollama")
+    elif os_type == "Linux":
+        logging.info("\n➡️ Install Ollama using the official script:\n   curl -fsSL https://ollama.com/install.sh | sh")
+    elif os_type == "Windows":
+        logging.info("\n➡️ Download and install Ollama from:\n   https://ollama.com/download")
+    else:
+        logging.info("\n⚠️ Unsupported OS. Please install Ollama manually from:\n   https://ollama.com")
+
+    return False
+
+def start_ollama():
+    """Ensure Ollama service is running."""
+    try:
+        # Run Ollama serve in the background
+        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        logging.info("🚀 Ollama server started successfully.")
+        
+        # Wait for Ollama to be ready
+        for _ in range(10):
+            try:
+                response = requests.get("http://localhost:11434")
+                if response.status_code == 200:
+                    logging.info("✅ Ollama server is running.")
+                    return
+            except requests.exceptions.ConnectionError:
+                time.sleep(2)
+
+        logging.error("❌ Ollama server failed to start.")
+        sys.exit(1)
+
+    except Exception as e:
+        logging.error(f"⚠️ Failed to start Ollama: {e}")
+        sys.exit("🚨 Please install Ollama and try again.")
+
+def ensure_ollama_model():
+    """Ensure the smallest model is available."""
+    try:
+        models = subprocess.run(["ollama", "list"], capture_output=True, text=True)
+        if OLLAMA_MODEL not in models.stdout:
+            logging.info(f"📥 Downloading Ollama model: {OLLAMA_MODEL} ...")
+            subprocess.run(["ollama", "pull", OLLAMA_MODEL], check=True)
+            logging.info("✅ Model downloaded successfully!")
+        else:
+            logging.info(f"✅ Ollama model '{OLLAMA_MODEL}' is already installed.")
+    except Exception as e:
+        logging.error(f"❌ Failed to check or download model: {e}")
+        sys.exit(1)
 
 def download_whisper_model():
     try:
@@ -47,6 +119,13 @@ def ensure_dependencies():
 def process_input(args):
     """Dynamically processes input based on arguments."""
     ensure_dependencies()
+
+    # Check and start Ollama
+    if not install_ollama():
+        sys.exit("🚨 Ollama is required but not installed.")
+
+    start_ollama()
+    ensure_ollama_model()
 
     if not any(value is not None for value in vars(args).values()):
         raise ValueError("No arguments provided.")
