@@ -34,8 +34,8 @@ regex==2024.9.11
 requests==2.32.3
 safetensors==0.4.5
 sumy==0.11.0
-sympy==1.13.1
-tokenizers==0.20.3
+sympy==1.13.3
+tokenizers==0.21.4
 torch==2.7.0
 tqdm==4.66.6
 transformers==4.50.0
